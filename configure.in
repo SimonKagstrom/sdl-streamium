@@ -1452,6 +1452,16 @@ AC_HELP_STRING([--enable-video-dummy], [use dummy video driver [[default=yes]]])
     fi
 }
 
+dnl Philips streamium (mci500h) video driver
+AC_ARG_ENABLE(video-streamium,
+AC_HELP_STRING([--enable-video-streamium], [use streamium video driver [[default=no]]]),
+                  , enable_video_streamium=yes)
+if test x$enable_video_streamium = xyes; then
+     AC_DEFINE(SDL_VIDEO_DRIVER_STREAMIUM)
+     SOURCES="$SOURCES $srcdir/src/video/streamium/*.c"
+     have_video=yes
+fi
+
 dnl Check to see if OpenGL support is desired
 AC_ARG_ENABLE(video-opengl,
 AC_HELP_STRING([--enable-video-opengl], [include OpenGL context creation [[default=yes]]]),

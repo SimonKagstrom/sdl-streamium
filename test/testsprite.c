@@ -168,9 +168,9 @@ int main(int argc, char *argv[])
 
 	numsprites = NUM_SPRITES;
 	videoflags = SDL_SWSURFACE|SDL_ANYFORMAT;
-	width = 640;
-	height = 480;
-	video_bpp = 8;
+	width = 320;
+	height = 240;
+	video_bpp = 24;
 	debug_flip = 0;
 	while ( argc > 1 ) {
 		--argc;

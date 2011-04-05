@@ -18,8 +18,8 @@
 #include "SDL.h"
 
 /* screen size */
-#define SCRW 640
-#define SCRH 480
+#define SCRW 320
+#define SCRH 240
 
 #define NBOATS 5
 #define SPEED 2
