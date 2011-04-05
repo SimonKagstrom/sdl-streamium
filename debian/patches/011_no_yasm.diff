@@ -1,0 +1,16 @@
+Index: libsdl1.2-1.2.11/configure.in
+===================================================================
+--- libsdl1.2-1.2.11.orig/configure.in	2006-07-19 15:29:05.000000000 +0200
++++ libsdl1.2-1.2.11/configure.in	2006-07-19 15:29:11.000000000 +0200
+@@ -597,10 +597,7 @@
+ AC_HELP_STRING([--enable-nasm], [use nasm assembly blitters on x86 [[default=yes]]]),
+                   , enable_nasm=yes)
+     if test x$enable_video = xyes -a x$enable_assembly = xyes -a x$enable_nasm = xyes; then
+-        AC_PATH_PROG(NASM, yasm)
+-        if test "x$NASM" = x -o "x$NASM" = x'"$NASM"'; then
+-            AC_PATH_PROG(NASM, nasm)
+-        fi
++        AC_PATH_PROG(NASM, nasm)
+         if test "x$NASM" != x -a "x$NASM" != x'"$NASM"'; then
+             AC_DEFINE(SDL_HERMES_BLITTERS)
+             SOURCES="$SOURCES $srcdir/src/hermes/*.asm"

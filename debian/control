@@ -1,0 +1,132 @@
+Source: libsdl1.2
+Priority: optional
+Section: libs
+Maintainer: Debian SDL packages maintainers <pkg-sdl-maintainers@lists.alioth.debian.org>
+Uploaders: Matthew Danish <mrd@debian.org>, Zephaniah E. Hull <warp@debian.org>, Lawrence Williams <lawrence_cecil_williams@hotmail.com>, Sam Hocevar (Debian packages) <sam+deb@zoy.org>, Aurelien Jarno <aurel32@debian.org>, Josselin Mouette <joss@debian.org>
+Standards-Version: 3.7.2
+Build-Depends: dpkg (>= 1.13.2), debhelper (>= 4.0), quilt, nasm [i386 kfreebsd-i386], libaa1-dev, libx11-dev, libxext-dev, libxt-dev, libxv-dev, x-dev, libaudiofile-dev, libesd0-dev, xlibmesa-gl-dev | libgl-dev, libsvga1-dev [amd64 i386], libarts1-dev, libartsc0-dev, libasound2-dev [i386 ia64 alpha amd64 armeb arm hppa m32r m68k mips mipsel powerpc ppc64 s390 s390x sh3 sh3eb sh4 sh4eb sparc], libaudio-dev, libdirectfb-dev (>= 0.9.25.1) [!hurd-i386], libusbhid-dev [kfreebsd-i386 kfreebsd-amd64]
+XS-Vcs-Svn: svn://svn.debian.org/svn/pkg-sdl/unstable/libsdl1.2/
+
+Package: libsdl1.2debian
+Architecture: any
+Section: libs
+Depends: libsdl1.2debian-alsa (= ${Source-Version}) | libsdl1.2debian-all (= ${Source-Version}) | libsdl1.2debian-esd (= ${Source-Version}) | libsdl1.2debian-arts (= ${Source-Version}) | libsdl1.2debian-oss (= ${Source-Version}) | libsdl1.2debian-nas (= ${Source-Version})
+Description: Simple DirectMedia Layer
+ SDL is a library that allows programs portable low level access to
+ a video framebuffer, audio output, mouse, and keyboard.
+ .
+ This is just a dummy package. You also need one of the four versions of
+ the library that this package depends on.
+ .
+ (Note: Updates from SDL CVS after the version release date are occasionally 
+ factored into these packages).
+
+Package: libsdl1.2debian-all
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Provides: libsdl1.2-all
+Description: Simple DirectMedia Layer (with all available options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11, aalib, svga and ggi graphics
+ drivers and oss, esound, alsa, arts, and nas sound drivers.
+
+Package: libsdl1.2debian-alsa
+Architecture: i386 ia64 alpha amd64 armeb arm hppa m32r m68k mips mipsel powerpc ppc64 s390 s390x sh3 sh3eb sh4 sh4eb sparc
+Section: libs
+Priority: extra
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-arts, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-nas, libsdl1.2-nas
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-arts, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-nas, libsdl1.2-nas
+Description: Simple DirectMedia Layer (with X11 and ALSA options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 graphics and ALSA sound.
+
+Package: libsdl1.2debian-oss
+Architecture: any
+Section: libs
+Priority: extra
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Provides: libsdl1.2-oss
+Description: Simple DirectMedia Layer (with X11 and OSS options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 graphics and oss sound.
+
+Package: libsdl1.2debian-esd
+Architecture: any
+Section: libs
+Priority: extra
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-oss, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-oss, libsdl1.2debian-arts, libsdl1.2debian-nas, libsdl1.2-nas
+Provides: libsdl1.2-esd
+Description: Simple DirectMedia Layer (with X11 and esound options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 graphics and esd (esound) sound.
+
+Package: libsdl1.2debian-arts
+Architecture: any
+Section: libs
+Priority: extra
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-nas, libsdl1.2-nas
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-nas, libsdl1.2-nas
+Provides: libsdl1.2-arts
+Description: Simple DirectMedia Layer (with X11 and aRts options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 graphics and aRts sound.
+
+Package: libsdl1.2debian-nas
+Architecture: any
+Section: libs
+Priority: extra
+Depends: ${shlibs:Depends}
+Replaces: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-arts
+Conflicts: libsdl1.2-all, libsdl1.2-esd, libsdl1.2-oss, libsdl1.2-arts, libsdl1.2 (<< 1.2.1-1), libsdl1.2debian-all, libsdl1.2debian-alsa, libsdl1.2debian-esd, libsdl1.2debian-oss, libsdl1.2debian-arts
+Provides: libsdl1.2-nas
+Description: Simple DirectMedia Layer (with X11 and NAS options)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with X11 graphics and NAS sound.
+
+Package: libsdl1.2debian-udeb
+XC-Package-Type: udeb
+Architecture: any
+Section: debian-installer
+Priority: extra
+Depends: ${shlibs:Depends}
+Description: Simple DirectMedia Layer (with directfb graphics and no sound)
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This version of SDL is compiled with directfb graphics and no sound.
+
+Package: libsdl1.2-dev
+Architecture: any
+Section: libdevel
+Depends: libsdl1.2debian (= ${Source-Version}), libx11-dev, libglu1-xorg-dev | libglu-dev
+Recommends: libxt-dev, libxext-dev, ${libsvga1-dev}, ${libasound2-dev}, libaa1-dev, libaudio-dev, libartsc0-dev, libesd0-dev, libdirectfb-dev (>= 0.9.22), ${libusbhid-dev}, libcaca-dev, libcucul-dev
+Replaces: libsdl-dev, libsdl0.11-dev, libsdl1.0-dev, libsdl1.1-dev
+Conflicts: xlibs-pic (<< 4.1.0-10), libsdl-dev, libsdl0.11-dev, libsdl0.11, libsdl1.0-dev, libsdl1.1-dev
+Provides: libsdl-dev
+Description: Simple DirectMedia Layer development files
+ SDL is a library that allows programs portable low level access to a video
+ framebuffer, audio output, mouse, and keyboard.
+ .
+ This package contains the files needed to compile and link programs which
+ use SDL.

@@ -1,0 +1,8 @@
+usr/include/SDL
+usr/lib/*.a
+usr/lib/*.so
+usr/lib/*.la
+usr/lib/pkgconfig
+usr/bin/sdl-config
+usr/share/aclocal/*
+usr/share/man/man1/sdl-config.1*

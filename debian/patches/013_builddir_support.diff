@@ -1,0 +1,13 @@
+Index: libsdl1.2-1.2.11/Makefile.in
+===================================================================
+--- libsdl1.2-1.2.11.orig/Makefile.in	2006-07-19 15:46:08.000000000 +0200
++++ libsdl1.2-1.2.11/Makefile.in	2006-07-19 15:46:18.000000000 +0200
+@@ -98,7 +98,7 @@
+ 	$(SHELL) $(auxdir)/mkinstalldirs $(datadir)/aclocal
+ 	$(INSTALL) -m 644 $(srcdir)/sdl.m4 $(datadir)/aclocal/sdl.m4
+ 	$(SHELL) $(auxdir)/mkinstalldirs $(libdir)/pkgconfig
+-	$(INSTALL) -m 644 $(srcdir)/sdl.pc $(libdir)/pkgconfig
++	$(INSTALL) -m 644 sdl.pc $(libdir)/pkgconfig
+ install-man:
+ 	$(SHELL) $(auxdir)/mkinstalldirs $(mandir)/man3
+ 	for src in $(srcdir)/docs/man3/*.3; do \

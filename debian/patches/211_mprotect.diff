@@ -1,0 +1,129 @@
+Index: libsdl1.2-1.2.10/src/video/SDL_stretch.c
+===================================================================
+--- libsdl1.2-1.2.10.orig/src/video/SDL_stretch.c	2006-05-01 10:02:48.000000000 +0200
++++ libsdl1.2-1.2.10/src/video/SDL_stretch.c	2006-05-31 01:05:09.000000000 +0200
+@@ -38,10 +38,23 @@
+      defined(__WATCOMC__) || \
+      (defined(__GNUC__) && defined(__i386__))) && SDL_ASSEMBLY_ROUTINES
+ #define USE_ASM_STRETCH
++#if defined(__linux__)
++#define USE_MPROTECT
++#endif
+ #endif
+ 
+ #ifdef USE_ASM_STRETCH
+ 
++#ifdef USE_MPROTECT
++#include <stdlib.h>
++#include <stdint.h>
++#include <limits.h>
++#ifndef PAGESIZE
++#define PAGESIZE 4096
++#endif
++#include <sys/mman.h>
++#endif
++
+ #if defined(_M_IX86) || defined(i386)
+ #define PREFIX16	0x66
+ #define STORE_BYTE	0xAA
+@@ -53,7 +66,13 @@
+ #error Need assembly opcodes for this architecture
+ #endif
+ 
+-static unsigned char copy_row[4096];
++#define MAX_CODE_LENGTH 4096
++
++#ifdef USE_MPROTECT
++static unsigned char *copy_row;
++#else
++static unsigned char copy_row[MAX_CODE_LENGTH];
++#endif
+ 
+ static int generate_rowbytes(int src_w, int dst_w, int bpp)
+ {
+@@ -62,12 +81,25 @@
+ 		int src_w;
+ 		int dst_w;
+ 	} last;
++#ifdef USE_MPROTECT
++	static unsigned char *code_buffer;
++#endif
+ 
+ 	int i;
+ 	int pos, inc;
+ 	unsigned char *eip;
+ 	unsigned char load, store;
+ 
++#ifdef USE_MPROTECT
++	if ( ! copy_row ) {
++		code_buffer = malloc(MAX_CODE_LENGTH + PAGESIZE - 1);
++		if ( ! code_buffer ) {
++			return(-1);
++		}
++		copy_row = (unsigned char *)(((uintptr_t)code_buffer + PAGESIZE - 1) & ~(uintptr_t)(PAGESIZE - 1));
++	}
++#endif
++
+ 	/* See if we need to regenerate the copy buffer */
+ 	if ( (src_w == last.src_w) &&
+ 	     (dst_w == last.dst_w) && (bpp == last.bpp) ) {
+@@ -91,6 +123,9 @@
+ 		SDL_SetError("ASM stretch of %d bytes isn't supported\n", bpp);
+ 		return(-1);
+ 	}
++#ifdef USE_MPROTECT
++	mprotect(copy_row, MAX_CODE_LENGTH, PROT_READ|PROT_WRITE);
++#endif
+ 	pos = 0x10000;
+ 	inc = (src_w << 16) / dst_w;
+ 	eip = copy_row;
+@@ -111,10 +146,13 @@
+ 	*eip++ = RETURN;
+ 
+ 	/* Verify that we didn't overflow (too late) */
+-	if ( eip > (copy_row+sizeof(copy_row)) ) {
++	if ( eip > (copy_row+MAX_CODE_LENGTH) ) {
+ 		SDL_SetError("Copy buffer overflow");
+ 		return(-1);
+ 	}
++#ifdef USE_MPROTECT
++	mprotect(copy_row, MAX_CODE_LENGTH, PROT_READ|PROT_EXEC);
++#endif
+ 	return(0);
+ }
+ 
+@@ -276,14 +314,19 @@
+ 			copy_row3(srcp, srcrect->w, dstp, dstrect->w);
+ 			break;
+ 		    default:
++		{
++#ifdef USE_MPROTECT
++			void *code = copy_row;
++#else
++			void *code = &copy_row;
++#endif
+ #ifdef __GNUC__
+ 			__asm__ __volatile__ (
+-			"call *%4"
++			"call %4"
+ 			: "=&D" (u1), "=&S" (u2)
+-			: "0" (dstp), "1" (srcp), "r" (copy_row)
++			: "0" (dstp), "1" (srcp), "r" (code)
+ 			: "memory" );
+ #elif defined(_MSC_VER) || defined(__WATCOMC__)
+-		{ void *code = copy_row;
+ 			__asm {
+ 				push edi
+ 				push esi
+@@ -295,10 +338,10 @@
+ 				pop esi
+ 				pop edi
+ 			}
+-		}
+ #else
+ #error Need inline assembly for this compiler
+ #endif
++		}
+ 			break;
+ 		}
+ #else

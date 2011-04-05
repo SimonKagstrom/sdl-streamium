@@ -1,0 +1,163 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+MAKE=make
+
+export SHLIBVER=(>= 1.2.10-1)
+
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_BUILD_ARCH		?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_ARCH_OS	?= $(shell dpkg-architecture -qDEB_BUILD_ARCH_OS)
+DEB_BUILD_ARCH_CPU	?= $(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU)
+
+export DEB_HOST_GNU_TYPE
+export DEB_BUILD_GNU_TYPE
+
+confflags = --prefix=/usr
+confflags += --disable-rpath --enable-dlopen \
+	     --enable-dependency-tracking \
+	     --enable-arts-shared=no --enable-alsa-shared=no \
+	     --enable-esd-shared=no
+all_confflags = --disable-video-ggi \
+		--enable-video-aalib --enable-video-directfb \
+		--enable-video-caca
+udeb_confflags = --enable-video-directfb --disable-video-ggi \
+		 --disable-video-svga --disable-video-x11 \
+		 --disable-video-aalib --disable-dga --disable-video-photon \
+		 --disable-video-fbcon --disable-video-ps2gs \
+		 --disable-video-opengl --disable-video-xbios \
+		 --disable-video-gem --disable-video-caca \
+		 --disable-audio --disable-audio-arts --disable-audio-esd \
+		 --disable-audio-oss --disable-audio-nas --disable-audio-alsa
+
+FLAVOURS = arts esd oss nas
+
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+  confflags += --build $(DEB_HOST_GNU_TYPE)
+else
+  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
+endif
+
+# Support for DEB_BUILD_OPTIONS
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+  confflags += --enable-debug
+else
+  confflags += --disable-debug
+endif
+
+# Only build SVGA support on linux-x86 and linux-amd64
+ifneq (,$(findstring $(DEB_BUILD_ARCH),amd64 i386))
+  all_confflags += --enable-video-svga
+  LIBSVGA1-DEV = libsvga1-dev
+else
+  all_confflags += --disable-video-svga
+endif
+# Only depends on libusbhid-dev on GNU/kFreeBSD
+ifeq ($(DEB_BUILD_ARCH_OS),kfreebsd)
+  LIBUSBHID-DEV = libusbhid-dev
+endif
+# Only use NASM routines on x86 CPUs
+ifeq ($(DEB_BUILD_ARCH_CPU),i386)
+  confflags += --enable-nasm
+endif
+
+# Only build ALSA support on Linux targets
+ifeq ($(DEB_BUILD_ARCH_OS),linux)
+  FLAVOURS += alsa
+  LIBASOUND2-DEV = libasound2-dev
+  no_libasound =
+else
+  LIBASOUND2-DEV =
+  no_libasound = -Nlibsdl1.2debian-alsa
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
+	touch configure # Fix timestamp
+	for dir in all $(FLAVOURS) udeb; do \
+	    if ( [ "$$dir" = "all" ] ); then \
+	        SWITCHES="$(all_confflags)"; \
+	    elif ( [ "$$dir" = "udeb" ] ); then \
+	        SWITCHES="$(udeb_confflags)"; \
+	    else \
+	        SWITCHES=""; \
+	        for switch in $(FLAVOURS); do \
+	            if ( [ "$$dir" = "$$switch" ] ); then \
+	                SWITCHES="$$SWITCHES --enable-$$switch"; \
+	            else \
+	                SWITCHES="$$SWITCHES --disable-$$switch"; \
+	            fi; \
+	        done; \
+	    fi; \
+	    mkdir -p builddir/$$dir; \
+	    (cd builddir/$$dir; ../../configure $(confflags) $$SWITCHES); \
+	done
+	touch configure-stamp
+
+build: build-stamp
+build-stamp: configure-stamp
+	dh_testdir
+	for dir in all $(FLAVOURS) udeb; do \
+	    $(MAKE) -C builddir/$$dir || exit 1; \
+	done
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -Rf builddir
+	QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2
+	rm -f build-stamp configure-stamp
+	dh_clean
+
+install:
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	$(MAKE) -C builddir/all install DESTDIR=`pwd`/debian/tmp
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs -A BUGS CREDITS README README-SDL.txt
+	dh_installexamples -plibsdl1.2-dev test
+	rm debian/libsdl1.2-dev/usr/share/doc/libsdl1.2-dev/examples/test/COPYING
+	cd debian/libsdl1.2-dev/usr/share/doc/libsdl1.2-dev/examples; \
+	  tar cf examples.tar test; \
+	  rm -rf test
+	mkdir -p debian/libsdl1.2-dev/usr/share/man/man3
+	cd debian/libsdl1.2-dev/usr/share/doc/libsdl1.2-dev/docs; \
+	  mv man3/* ../../../man/man3/; rmdir man3
+	dh_installman -plibsdl1.2-dev debian/sdl-config.1
+	dh_installchangelogs
+	dh_install --sourcedir=debian/tmp
+	sed -i -e "s/^dependency_libs=.*/dependency_libs=''/" debian/libsdl1.2-dev/usr/lib/libSDL.la
+	for dir in $(FLAVOURS) udeb; do \
+	    dh_install --sourcedir=builddir/$$dir/ -plibsdl1.2debian-$$dir build/.libs/*.so.* usr/lib/; \
+	done
+	rm -rf debian/libsdl1.2debian/usr/include
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	mkdir -p debian/libsdl1.2debian-udeb/DEBIAN
+	for dir in all $(FLAVOURS) udeb; do echo "libSDL-1.2 0 libsdl1.2debian $$SHLIBVER" > debian/libsdl1.2debian-$$dir/DEBIAN/shlibs; done
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol $(no_libasound) -- -Vlibsvga1-dev=$(LIBSVGA1-DEV) -Vlibasound2-dev=$(LIBASOUND2-DEV) -Vlibusbhid-dev=$(LIBUSBHID-DEV)
+	dh_md5sums
+	dh_builddeb $(no_libasound)
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary

@@ -1,0 +1,15 @@
+Index: libsdl1.2-1.2.11/build-scripts/strip_fPIC.sh
+===================================================================
+--- libsdl1.2-1.2.11.orig/build-scripts/strip_fPIC.sh	2006-06-27 06:48:32.000000000 +0200
++++ libsdl1.2-1.2.11/build-scripts/strip_fPIC.sh	2006-07-19 14:51:41.000000000 +0200
+@@ -5,8 +5,8 @@
+ command=""
+ while [ $# -gt 0 ]; do
+     case "$1" in
+-        -?PIC)
+-            # Ignore -fPIC and -DPIC options
++        -fPIC)
++            # Ignore -fPIC option
+             ;;
+         -fno-common)
+             # Ignore -fPIC and -DPIC options

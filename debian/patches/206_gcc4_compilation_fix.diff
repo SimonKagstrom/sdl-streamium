@@ -1,0 +1,22 @@
+Index: libsdl1.2-1.2.10/include/SDL_events.h
+===================================================================
+--- libsdl1.2-1.2.10.orig/include/SDL_events.h	2006-05-01 10:02:59.000000000 +0200
++++ libsdl1.2-1.2.10/include/SDL_events.h	2006-05-18 18:48:59.000000000 +0200
+@@ -44,7 +44,7 @@
+ #define SDL_PRESSED	1
+ 
+ /* Event enumerations */
+-typedef enum {
++typedef enum SDL_Events {
+        SDL_NOEVENT = 0,			/* Unused (do not remove) */
+        SDL_ACTIVEEVENT,			/* Application loses/gains visibility */
+        SDL_KEYDOWN,			/* Keys pressed */
+@@ -79,7 +79,7 @@
+ 
+ /* Predefined event masks */
+ #define SDL_EVENTMASK(X)	(1<<(X))
+-typedef enum {
++typedef enum SDL_EventMasks {
+ 	SDL_ACTIVEEVENTMASK	= SDL_EVENTMASK(SDL_ACTIVEEVENT),
+ 	SDL_KEYDOWNMASK		= SDL_EVENTMASK(SDL_KEYDOWN),
+ 	SDL_KEYUPMASK		= SDL_EVENTMASK(SDL_KEYUP),

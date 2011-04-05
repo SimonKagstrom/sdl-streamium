@@ -1,0 +1,24 @@
+diff -Naru libsdl1.2-1.2.11/src/video/fbcon/SDL_fbvideo.c libsdl1.2-patched/src/video/fbcon/SDL_fbvideo.c
+--- libsdl1.2-1.2.11/src/video/fbcon/SDL_fbvideo.c	2006-05-17 00:16:07.000000000 -0300
++++ libsdl1.2-patched/src/video/fbcon/SDL_fbvideo.c	2006-08-02 20:46:35.748443472 -0300
+@@ -547,7 +547,7 @@
+ 
+ 	/* Memory map the device, compensating for buggy PPC mmap() */
+ 	mapped_offset = (((long)finfo.smem_start) -
+-	                (((long)finfo.smem_start)&~(PAGE_SIZE-1)));
++	                (((long)finfo.smem_start)&~(sysconf(_SC_PAGESIZE)-1)));
+ 	mapped_memlen = finfo.smem_len+mapped_offset;
+ 	mapped_mem = do_mmap(NULL, mapped_memlen,
+ 	                  PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);
+diff -Naru libsdl1.2-1.2.11/src/video/ps2gs/SDL_gsyuv.c libsdl1.2-patched/src/video/ps2gs/SDL_gsyuv.c
+--- libsdl1.2-1.2.11/src/video/ps2gs/SDL_gsyuv.c	2006-05-17 00:16:07.000000000 -0300
++++ libsdl1.2-patched/src/video/ps2gs/SDL_gsyuv.c	2006-08-02 20:35:18.992336121 -0300
+@@ -180,7 +180,7 @@
+ 
+ 	/* Allocate a DMA area for pixel conversion */
+ 	bpp = this->screen->format->BytesPerPixel;
+-	map_offset = (mapped_len + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
++	map_offset = (mapped_len + (sysconf(_SC_PAGESIZE) - 1)) & ~(sysconf(_SC_PAGESIZE) - 1);
+ 	hwdata->dma_len = hwdata->macroblocks * (16 * 16 + 8 * 8 + 8 * 8) +
+ 	                  width * height * bpp +
+ 	                  hwdata->macroblocks * (16 * sizeof(long long)) +
