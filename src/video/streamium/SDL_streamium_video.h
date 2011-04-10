@@ -33,11 +33,15 @@
 /* Private display data */
 
 struct SDL_PrivateVideoData {
-	int fd;
+	int video_fd;
+	int buttons_fd;
     int w, h;
     int screen_w, screen_h;
     void *buffer;
     size_t bufsize;
+
+    SDLKey keymap[256];
+    int current_keys[256];
 };
 
 #endif /* _SDL_nullvideo_h */

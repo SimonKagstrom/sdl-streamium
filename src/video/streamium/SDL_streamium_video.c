@@ -218,7 +218,7 @@ int STREAMIUM_VideoInit(_THIS, SDL_PixelFormat *vformat)
 		return -1;
 	}
 
-	this->hidden->fd = fd;
+	this->hidden->video_fd = fd;
 	this->hidden->screen_w = screen_w;
 	this->hidden->screen_h = screen_h;
 	this->hidden->bufsize = screen_w * screen_h * vformat->BytesPerPixel;
@@ -253,7 +253,7 @@ SDL_Surface *STREAMIUM_SetVideoMode(_THIS, SDL_Surface *current,
 		munmap( this->hidden->buffer, this->hidden->bufsize );
 
 	this->hidden->buffer = mmap(NULL, this->hidden->bufsize, PROT_WRITE, MAP_SHARED,
-			this->hidden->fd, 0);
+			this->hidden->video_fd, 0);
 	if ( ! this->hidden->buffer ) {
 		SDL_SetError("Couldn't map buffer for requested mode");
 		return(NULL);
@@ -283,7 +283,7 @@ SDL_Surface *STREAMIUM_SetVideoMode(_THIS, SDL_Surface *current,
 
 static int STREAMIUM_FlipHWSurface(_THIS, SDL_Surface *surface)
 {
-	ioctl(this->hidden->fd, IOCTRL_UPDATE_NOW, NULL);
+	ioctl(this->hidden->video_fd, IOCTRL_UPDATE_NOW, NULL);
 	return 0;
 }
 
@@ -327,5 +327,5 @@ void STREAMIUM_VideoQuit(_THIS)
 	if (this->hidden->buffer)
 		munmap(this->hidden->buffer, this->hidden->bufsize);
 
-	close(this->hidden->fd);
+	close(this->hidden->video_fd);
 }
