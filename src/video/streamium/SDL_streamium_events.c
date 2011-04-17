@@ -79,7 +79,7 @@ enum key_t_{
 	physical_key_REC,
 
 
-	/* 0x11 */
+	/* 0x10 */
 	physical_KEY_POWER_STANDBY,
 	physical_key_Like_Artist,
 	physical_key_Like_Genre,
@@ -89,7 +89,7 @@ enum key_t_{
 	physical_key_View,
 	physical_key_Dim,
 
-	/* 0x19 */
+	/* 0x18 */
 	virtual_VIEW_UP,
 	virtual_VIEW_DOWN,
 	virtual_PLAY_UP,
@@ -98,6 +98,8 @@ enum key_t_{
 	virtual_DBB_SOURCE,
 
 	/* 0x20 */
+	unknown_key,
+	unknown_key2,
 	physical_key_RIGHT,
 	physical_key_LEFT,
 	physical_key_EJECT,
@@ -163,7 +165,7 @@ void STREAMIUM_InitOSKeymap(_THIS)
 	keymap[physical_key_Right_Forward] = SDLK_RIGHT;
 	keymap[physical_KEY_STOP] = SDLK_ESCAPE;
 
-	keymap[physical_KEY_SOURCE] = SDLK_UNKNOWN;
+	keymap[physical_KEY_SOURCE] = SDLK_HOME;
 	keymap[physical_key_Down_Next] = SDLK_DOWN;
 	keymap[physical_key_Mark] = SDLK_UNKNOWN;
 	keymap[physical_KEY_VOLUME_UP] = SDLK_PLUS;
@@ -177,7 +179,7 @@ void STREAMIUM_InitOSKeymap(_THIS)
 	keymap[physical_key_Like_Artist] = SDLK_UNKNOWN;
 	keymap[physical_key_Like_Genre] = SDLK_UNKNOWN;
 	keymap[physical_key_Match_Genre] = SDLK_UNKNOWN;
-	keymap[physical_key_Menu] = SDLK_HOME;
+	keymap[physical_key_Menu] = 'M';
 	keymap[physical_key_Up_Previous] = SDLK_UP;
 	keymap[physical_key_View] = SDLK_UNKNOWN;
 	keymap[physical_key_Dim] = SDLK_UNKNOWN;
