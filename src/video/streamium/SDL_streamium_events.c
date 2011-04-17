@@ -119,9 +119,6 @@ void STREAMIUM_PumpEvents(_THIS)
 		return;
 	}
 	key = (key_t)(data & 0xff);
-	/* Nothing */
-	if (key == Virtual_Key_Idle)
-		return;
 
 	for (i = 0; i < MAX_KEYS; i++) {
 		SDL_keysym keysym;
@@ -132,13 +129,14 @@ void STREAMIUM_PumpEvents(_THIS)
 		keysym.unicode = 0;
 
 		/* Pressed or released */
-		if (i == key && !this->hidden->current_keys[i])
+		if (i == key && !this->hidden->current_keys[i]) {
 			SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
-		else if (this->hidden->current_keys[i])
+			this->hidden->current_keys[key] = 1; /* Pressed */
+		} else if (i != key && this->hidden->current_keys[i]) {
 			SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
+			this->hidden->current_keys[i] = 0;
+		}
 	}
-
-	this->hidden->current_keys[key] = 1; /* Pressed */
 }
 
 void STREAMIUM_InitOSKeymap(_THIS)
@@ -191,8 +189,8 @@ void STREAMIUM_InitOSKeymap(_THIS)
 	keymap[virtual_VIEW_SOURCE] = SDLK_UNKNOWN;
 	keymap[virtual_DBB_SOURCE] = SDLK_UNKNOWN;
 
-	keymap[physical_key_RIGHT] = SDLK_UNKNOWN;
-	keymap[physical_key_LEFT] = SDLK_UNKNOWN;
+	keymap[physical_key_RIGHT] = SDLK_PAGEDOWN;
+	keymap[physical_key_LEFT] = SDLK_PAGEUP;
 	keymap[physical_key_EJECT] = SDLK_UNKNOWN;
 	keymap[physical_key_ERROR_ADVALUE] = SDLK_UNKNOWN;
 }
