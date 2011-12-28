@@ -1,0 +1,4 @@
+./configure --enable-video-streamium --disable-alsa --disable-video-wscons -
+-disable-video-ps2gs --disable-video-fbcon --disable-video-opengl --disable-vide
+o-x11-dpms --disable-video-x11 --disable-video-svga --disable-oss --disable-esd 
+--disable-audio --disable-cdrom --disable-joystick --prefix=/usr
